@@ -1,0 +1,73 @@
+// =========================================================================
+// messaging.proto — contrato do serviço Messaging (Oracle Cloud)
+//
+// Dono exclusivo de: mensagens e de uma CÓPIA local dos nomes dos
+// usuários (cache), para exibir as conversas sem nunca perguntar nada
+// ao Discovery. Não existe "permissão de chat": qualquer par de user_id
+// pode conversar.
+// =========================================================================
+syntax = "proto3";
+
+package messaging;
+
+service Messaging {
+  // UNÁRIO: chamado só pelo Gateway, para manter o cache de nomes em dia.
+  rpc AtualizarNome(PedidoAtualizarNome) returns (Confirmacao);
+
+  // BIDIRECIONAL: os dois lados mandam mensagens quando quiserem, no mesmo
+  // stream, de forma independente. É o que permite o chat em tempo real.
+  rpc Chat(stream EnvioChat) returns (stream MensagemChat);
+
+  // SERVER STREAMING: devolve as conversas do usuário, uma por mensagem,
+  // da mais recente para a mais antiga.
+  rpc ListarConversas(PedidoListarConversas) returns (stream Conversa);
+}
+
+// --- AtualizarNome ------------------------------------------------------
+
+message PedidoAtualizarNome {
+  string user_id = 1;
+  string novo_nome = 2;
+}
+
+// --- Chat ---------------------------------------------------------------
+
+// O que o cliente envia no stream.
+// A 1ª mensagem ABRE a conversa: identifica quem sou eu (de_user_id) e com
+// quem quero falar (para_user_id). Nela o texto pode vir vazio — o servidor
+// responde enviando o histórico. Nas seguintes, o texto é a mensagem.
+message EnvioChat {
+  string de_user_id = 1;
+  string para_user_id = 2;
+  string texto = 3;
+}
+
+// O que o servidor envia no stream: histórico e mensagens novas
+// (tanto as minhas, como confirmação, quanto as da outra pessoa).
+message MensagemChat {
+  int64 id = 1;
+  string de_user_id = 2;
+  string de_nome = 3;       // vem do cache de nomes ("Usuário" se não houver)
+  string para_user_id = 4;
+  string texto = 5;
+  string enviada_em = 6;    // ISO 8601 em UTC, ex.: "2026-09-29T14:02:31+00:00"
+}
+
+// --- ListarConversas ----------------------------------------------------
+
+message PedidoListarConversas {
+  string user_id = 1;
+}
+
+message Conversa {
+  string outro_user_id = 1;
+  string outro_nome = 2;        // do cache de nomes
+  string ultima_mensagem = 3;
+  string ultima_em = 4;         // ISO 8601 em UTC
+}
+
+// --- Genérico -----------------------------------------------------------
+
+message Confirmacao {
+  string mensagem = 1;
+}

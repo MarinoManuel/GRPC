@@ -1,0 +1,21 @@
+# Serviço systemd do Messaging (instalado em /etc/systemd/system/ no Oracle).
+#
+# Mesmo esquema do Discovery: continua rodando depois de fechar o SSH,
+# religa sozinho se morrer por erro e sobe junto com a máquina.
+#   sudo systemctl start|stop|restart|status messaging
+#   journalctl -u messaging -f      (acompanhar o log ao vivo)
+
+[Unit]
+Description=Messaging (gRPC) - projeto de Sistemas Distribuidos
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/grpc
+ExecStart=/home/ubuntu/grpc/.venv/bin/python -m messaging.servidor
+# Religa se morrer por erro; "systemctl stop" (demo de queda) não religa.
+Restart=on-failure
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

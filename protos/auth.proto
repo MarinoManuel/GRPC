@@ -1,0 +1,44 @@
+// =========================================================================
+// auth.proto — contrato do serviço Auth (roda no seu PC, junto do Gateway)
+//
+// O Auth é dono APENAS das credenciais: {user_id, email, senha}.
+// Nome, bio e foto não moram aqui — eles são repassados ao Discovery
+// durante o cadastro.
+// =========================================================================
+syntax = "proto3";
+
+package auth;
+
+service Auth {
+  // UNÁRIO: uma requisição -> uma resposta.
+  // Antes de gravar a credencial, o Auth cria o perfil no Discovery
+  // (via client streaming). Se o Discovery falhar, nada é gravado.
+  rpc Register(PedidoCadastro) returns (RespostaCadastro);
+
+  // UNÁRIO: consulta só o banco local, não chama nenhum outro serviço.
+  rpc Login(PedidoLogin) returns (RespostaLogin);
+}
+
+message PedidoCadastro {
+  string email = 1;
+  string senha = 2;          // texto puro: fora de escopo (projeto didático)
+  string nome = 3;
+  string bio = 4;
+  bytes foto = 5;            // imagem inteira; o Auth fatia antes de enviar
+  string extensao_foto = 6;  // ex.: "jpg", "png"
+}
+
+message RespostaCadastro {
+  string user_id = 1;
+}
+
+message PedidoLogin {
+  string email = 1;
+  string senha = 2;
+}
+
+message RespostaLogin {
+  // Serve como "sessão" simples: o cliente guarda e envia esse id
+  // nas próximas requisições. Sem token assinado (fora de escopo).
+  string user_id = 1;
+}

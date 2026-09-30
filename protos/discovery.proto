@@ -1,0 +1,107 @@
+// =========================================================================
+// discovery.proto — contrato do serviço Discovery (VPS Hostinger)
+//
+// Dono exclusivo de: perfis (nome, bio, foto) e avaliações (quem curtiu /
+// passou quem). Nunca chama o Messaging, nem é chamado por ele.
+// =========================================================================
+syntax = "proto3";
+
+package discovery;
+
+service Discovery {
+  // CLIENT STREAMING: o cliente manda VÁRIAS mensagens, o servidor
+  // responde UMA vez no final. A 1ª mensagem traz os dados do perfil; as
+  // seguintes trazem a foto em pedaços. Assim uma foto grande não precisa
+  // caber numa única mensagem gRPC (o limite padrão é 4 MB).
+  rpc CreateProfile(stream PedacoCadastro) returns (PerfilCriado);
+
+  // UNÁRIO: altera nome e/ou bio de um perfil existente.
+  rpc UpdateProfile(PedidoAtualizarPerfil) returns (Confirmacao);
+
+  // UNÁRIO: devolve um único perfil (tela "meu perfil" e avatares dos chats).
+  rpc GetProfile(PedidoPerfil) returns (Perfil);
+
+  // SERVER STREAMING: o cliente pede UMA vez, o servidor devolve VÁRIOS
+  // perfis, um por mensagem, cada um já com os bytes da sua foto.
+  rpc GetFeed(PedidoFeed) returns (stream Perfil);
+
+  // UNÁRIOS: ações puramente locais — só gravam no banco do Discovery.
+  rpc Like(PedidoAvaliacao) returns (Confirmacao);
+  rpc Pass(PedidoAvaliacao) returns (Confirmacao);
+
+  // SERVER STREAMING: devolve, um a um, os perfis de quem curtiu o usuário.
+  rpc QuemMeCurtiu(PedidoQuemMeCurtiu) returns (stream Perfil);
+}
+
+// --- CreateProfile ------------------------------------------------------
+
+message DadosPerfil {
+  string user_id = 1;        // gerado pelo Auth (uuid4) e repassado aqui
+  string nome = 2;
+  string bio = 3;
+  string extensao_foto = 4;  // ex.: "jpg" — define o nome do arquivo salvo
+}
+
+// Cada mensagem do stream é OU os dados do perfil OU um pedaço da foto.
+// "oneof" garante que só um dos dois campos vem preenchido por mensagem.
+message PedacoCadastro {
+  oneof conteudo {
+    DadosPerfil dados = 1;   // obrigatoriamente a 1ª mensagem
+    bytes pedaco_foto = 2;   // da 2ª mensagem em diante
+  }
+}
+
+message PerfilCriado {
+  string user_id = 1;
+  int64 tamanho_foto_bytes = 2;  // para conferir que a foto chegou inteira
+}
+
+// --- UpdateProfile ------------------------------------------------------
+
+message PedidoAtualizarPerfil {
+  string user_id = 1;
+  // "optional" permite distinguir "não mandei o campo" de "mandei vazio".
+  // Assim dá para mudar só o nome, só a bio, ou os dois.
+  optional string nome = 2;
+  optional string bio = 3;
+}
+
+// --- Feed / QuemMeCurtiu ------------------------------------------------
+
+message PedidoFeed {
+  string user_id = 1;  // quem está pedindo (para não mostrar a si mesmo)
+  // false (padrão): só quem ainda não foi curtido/passado.
+  // true: todo mundo, inclusive quem já foi avaliado ("ver de novo").
+  bool incluir_avaliados = 2;
+}
+
+message PedidoQuemMeCurtiu {
+  string user_id = 1;
+}
+
+message PedidoPerfil {
+  string user_id = 1;
+}
+
+message Perfil {
+  string user_id = 1;   // é com esse id que o Gateway abre o chat depois
+  string nome = 2;
+  string bio = 3;
+  bytes foto = 4;       // bytes lidos do disco na hora do envio
+  string tipo_foto = 5; // ex.: "image/jpeg" — ajuda o frontend a exibir
+}
+
+// --- Like / Pass --------------------------------------------------------
+
+message PedidoAvaliacao {
+  string de_user_id = 1;    // quem está avaliando
+  string para_user_id = 2;  // quem está sendo avaliado
+}
+
+// --- Genérico -----------------------------------------------------------
+
+// Resposta de sucesso simples. Erros NÃO vêm aqui: vêm como status gRPC
+// (NOT_FOUND, INVALID_ARGUMENT...), que o cliente recebe como exceção.
+message Confirmacao {
+  string mensagem = 1;
+}

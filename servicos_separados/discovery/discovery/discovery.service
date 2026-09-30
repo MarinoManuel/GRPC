@@ -1,0 +1,25 @@
+# Serviço systemd do Discovery (instalado em /etc/systemd/system/ na VPS).
+#
+# Por que systemd e não tmux/screen: o systemd já vem no Ubuntu, mantém o
+# serviço rodando depois que você fecha o SSH, religa sozinho se o
+# processo morrer por erro e sobe junto com a máquina após um reboot.
+# Comandos do dia a dia:
+#   sudo systemctl start|stop|restart|status discovery
+#   journalctl -u discovery -f      (acompanhar o log ao vivo)
+
+[Unit]
+Description=Discovery (gRPC) - projeto de Sistemas Distribuidos
+After=network.target
+
+[Service]
+User=marino
+WorkingDirectory=/home/marino/grpc
+ExecStart=/home/marino/grpc/.venv/bin/python -m discovery.servidor
+# Religa se o processo morrer por erro. Um "systemctl stop" (usado na demo
+# de queda) NÃO é considerado erro, então o serviço fica parado.
+Restart=on-failure
+# Faz o print() aparecer no journal na hora, sem esperar encher o buffer.
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

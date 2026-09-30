@@ -1,0 +1,5 @@
+# Discovery só precisa do gRPC e do Health Check.
+# Versões iguais às usadas para gerar a pasta gerado/.
+grpcio==1.84.0
+grpcio-health-checking==1.84.0
+protobuf==7.36.2

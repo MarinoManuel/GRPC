@@ -1,0 +1,8 @@
+# Versões fixas, iguais às usadas para gerar a pasta gerado/.
+# O código gerado exige grpcio 1.84 e protobuf 7.35.1 ou superior.
+grpcio==1.84.0
+grpcio-tools==1.84.0
+grpcio-health-checking==1.84.0
+protobuf==7.36.2
+fastapi==0.141.1
+uvicorn[standard]==0.54.0

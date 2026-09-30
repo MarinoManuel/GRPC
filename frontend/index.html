@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#110d0b">
+  <title>faísca</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23110d0b'/><path d='M16 5c1 6 3 8.5 10 11-7 2.5-9 5-10 11-1-6-3-8.5-10-11 7-2.5 9-5 10-11z' fill='%23ff5a36'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..800,0..100,0..1;1,9..144,300..800,0..100,0..1&display=swap">
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <div class="grao" aria-hidden="true"></div>
+
+  <!-- ===================================================================
+       ENTRADA (login / cadastro)
+       =================================================================== -->
+  <section id="tela-entrada" class="entrada" hidden>
+    <div class="entrada-arte">
+      <div class="brasa" aria-hidden="true"></div>
+      <div class="brasa brasa-2" aria-hidden="true"></div>
+
+      <a class="logo" href="#">faísca<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1c.8 5 2.6 7.3 9 11-6.4 3.7-8.2 6-9 11-.8-5-2.6-7.3-9-11 6.4-3.7 8.2-6 9-11z"/></svg></a>
+
+      <div class="entrada-texto">
+        <p class="sobrelinha">Edição nº 01 · Encontros</p>
+        <h1 class="manchete">Todo encontro<br>começa com<br>uma <em>faísca</em>.</h1>
+        <p class="entrada-sub">Pessoas de verdade, uma de cada vez. E conversas que começam
+          com um simples oi, sem precisar esperar por um match.</p>
+      </div>
+
+      <div class="letreiro" aria-hidden="true">
+        <div class="letreiro-trilho">
+          <span>café coado</span><i>✦</i><span>pôr do sol</span><i>✦</i><span>anime</span><i>✦</i>
+          <span>livros</span><i>✦</i><span>samba</span><i>✦</i><span>plantas</span><i>✦</i>
+          <span>açaí</span><i>✦</i><span>treino</span><i>✦</i><span>playlists</span><i>✦</i>
+          <span>café coado</span><i>✦</i><span>pôr do sol</span><i>✦</i><span>anime</span><i>✦</i>
+          <span>livros</span><i>✦</i><span>samba</span><i>✦</i><span>plantas</span><i>✦</i>
+          <span>açaí</span><i>✦</i><span>treino</span><i>✦</i><span>playlists</span><i>✦</i>
+        </div>
+      </div>
+    </div>
+
+    <div class="entrada-painel">
+      <div class="abas-entrada" role="tablist">
+        <button type="button" role="tab" data-modo="entrar" class="ativa">Entrar</button>
+        <button type="button" role="tab" data-modo="cadastrar">Criar conta</button>
+        <span class="abas-indicador" aria-hidden="true"></span>
+      </div>
+
+      <form id="form-entrar" class="formulario" novalidate>
+        <h2 class="form-titulo">Bem-vindo <em>de volta</em>.</h2>
+        <label class="campo"><span>E-mail</span><input name="email" type="email" autocomplete="email" required placeholder="voce@exemplo.com"></label>
+        <label class="campo"><span>Senha</span><input name="senha" type="password" autocomplete="current-password" required placeholder="••••••"></label>
+        <button class="botao-primario" type="submit"><span>Entrar</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </form>
+
+      <form id="form-cadastrar" class="formulario" novalidate hidden>
+        <h2 class="form-titulo">Comece <em>por você</em>.</h2>
+        <div class="cadastro-topo">
+          <label class="foto-drop" id="foto-drop" tabindex="0">
+            <input type="file" name="foto" accept="image/*" hidden>
+            <img alt="" hidden>
+            <span class="foto-drop-texto"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Sua<br>foto</span>
+          </label>
+          <div class="cadastro-topo-campos">
+            <label class="campo"><span>Nome</span><input name="nome" required maxlength="40" placeholder="Como quer ser chamado"></label>
+          </div>
+        </div>
+        <label class="campo"><span>Bio <small class="contador" data-para="bio">0/160</small></span><textarea name="bio" rows="2" maxlength="160" placeholder="Duas linhas sobre o que te faz sorrir"></textarea></label>
+        <div class="campos-dupla">
+          <label class="campo"><span>E-mail</span><input name="email" type="email" autocomplete="email" required placeholder="voce@exemplo.com"></label>
+          <label class="campo"><span>Senha</span><input name="senha" type="password" autocomplete="new-password" required placeholder="••••••"></label>
+        </div>
+        <button class="botao-primario" type="submit"><span>Criar conta</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </form>
+
+      <p class="erro-form" id="erro-entrada" role="alert"></p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       APP
+       =================================================================== -->
+  <div id="app" class="app" hidden>
+    <nav class="trilho" aria-label="Navegação principal">
+      <a class="logo logo-pequeno" href="#descobrir">faísca<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1c.8 5 2.6 7.3 9 11-6.4 3.7-8.2 6-9 11-.8-5-2.6-7.3-9-11 6.4-3.7 8.2-6 9-11z"/></svg></a>
+
+      <div class="nav-itens">
+        <button class="nav-item" data-aba="descobrir">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 16.5c1-1.6 2.2-2.4 3.5-2.4s2.5.8 3.5 2.4"/><circle cx="12" cy="10" r="2.4"/></svg>
+          <span>Descobrir</span>
+        </button>
+        <button class="nav-item" data-aba="curtidas">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z"/></svg>
+          <span>Curtidas</span>
+        </button>
+        <button class="nav-item" data-aba="chats">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V17A2.5 2.5 0 0 1 4 14.5z"/></svg>
+          <span>Chats</span>
+        </button>
+        <button class="nav-item" data-aba="perfil">
+          <span class="nav-avatar" id="nav-avatar"></span>
+          <span>Perfil</span>
+        </button>
+      </div>
+
+      <div class="sistema" id="sistema" aria-live="polite" title="Situação dos serviços"></div>
+    </nav>
+
+    <main class="palco">
+
+      <!-- ---------------- DESCOBRIR ---------------- -->
+      <section id="aba-descobrir" class="aba" hidden>
+        <div class="descobrir-grade" data-conteudo>
+          <header class="descobrir-texto">
+            <p class="sobrelinha">Nº 01 — Descobrir</p>
+            <h2 class="titulo-aba">Quem está <br><em>por aqui</em>.</h2>
+            <p class="contador-feed" id="contador-feed"></p>
+            <ul class="teclas">
+              <li><kbd>←</kbd><kbd>→</kbd> voltar e avançar</li>
+              <li><kbd>C</kbd> curtir</li>
+              <li><kbd>X</kbd> passar</li>
+              <li><kbd>M</kbd> mensagem</li>
+            </ul>
+          </header>
+
+          <div class="descobrir-centro">
+            <div class="pilha-moldura">
+              <button class="seta" id="botao-anterior" aria-label="Perfil anterior" title="Anterior (←)">
+                <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+              </button>
+              <div class="pilha" id="pilha"></div>
+              <button class="seta" id="botao-proxima" aria-label="Próximo perfil" title="Próximo (→)">
+                <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+            <div class="acoes" id="acoes">
+              <button class="botao-redondo" id="botao-passar" aria-label="Passar" title="Passar (X)">
+                <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+              </button>
+              <button class="botao-redondo grande" id="botao-curtir" aria-label="Curtir" title="Curtir (C)">
+                <svg viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z"/></svg>
+              </button>
+              <button class="botao-redondo" id="botao-mensagem" aria-label="Mandar mensagem" title="Mensagem (M)">
+                <svg viewBox="0 0 24 24"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V17A2.5 2.5 0 0 1 4 14.5z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <aside class="a-seguir" id="a-seguir"></aside>
+        </div>
+      </section>
+
+      <!-- ---------------- CURTIDAS ---------------- -->
+      <section id="aba-curtidas" class="aba" hidden>
+        <header class="cabecalho-aba">
+          <p class="sobrelinha">Nº 02 — Curtidas</p>
+          <h2 class="titulo-aba">Quem <em>reparou</em> <br>em você.</h2>
+        </header>
+        <div class="mural" id="mural" data-conteudo></div>
+      </section>
+
+      <!-- ---------------- CHATS ---------------- -->
+      <section id="aba-chats" class="aba" hidden>
+        <div class="chats" data-conteudo>
+          <aside class="lista-conversas">
+            <header class="cabecalho-aba compacto">
+              <p class="sobrelinha">Nº 03 — Chats</p>
+              <h2 class="titulo-aba">Conversas</h2>
+            </header>
+            <div class="conversas" id="conversas"></div>
+          </aside>
+
+          <div class="conversa" id="conversa">
+            <div class="conversa-vazia" id="conversa-vazia">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1c.8 5 2.6 7.3 9 11-6.4 3.7-8.2 6-9 11-.8-5-2.6-7.3-9-11 6.4-3.7 8.2-6 9-11z"/></svg>
+              <h3>Escolha uma <em>conversa</em>.</h3>
+              <p>Ou toque no balão de um perfil em Descobrir: não é preciso curtir antes.</p>
+            </div>
+
+            <div class="conversa-ativa" id="conversa-ativa" hidden>
+              <header class="conversa-topo">
+                <button class="voltar" id="voltar-conversas" aria-label="Voltar"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+                <span class="conversa-avatar" id="conversa-avatar"></span>
+                <h3 id="conversa-nome"></h3>
+              </header>
+              <div class="mensagens" id="mensagens"></div>
+              <form class="compositor" id="compositor">
+                <textarea id="campo-mensagem" rows="1" placeholder="Escreva algo gentil…" maxlength="1000"></textarea>
+                <button type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24"><path d="M4 12 20 4l-4 16-4-7z"/><path d="m12 13 8-9"/></svg></button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------------- PERFIL ---------------- -->
+      <section id="aba-perfil" class="aba" hidden>
+        <header class="cabecalho-aba">
+          <p class="sobrelinha">Nº 04 — Perfil</p>
+          <h2 class="titulo-aba">Como os outros <br><em>te veem</em>.</h2>
+        </header>
+        <div class="perfil-grade" data-conteudo>
+          <figure class="polaroid grande" id="perfil-polaroid">
+            <div class="polaroid-foto" id="perfil-foto"></div>
+            <figcaption id="perfil-legenda"></figcaption>
+          </figure>
+
+          <div class="perfil-lado">
+            <form id="form-perfil" class="formulario">
+              <label class="campo"><span>Nome</span><input name="nome" maxlength="40"></label>
+              <label class="campo"><span>Bio <small class="contador" data-para="bio-perfil">0/160</small></span><textarea name="bio" rows="3" maxlength="160"></textarea></label>
+              <div class="perfil-botoes">
+                <button class="botao-primario" type="submit"><span>Salvar alterações</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></button>
+                <button class="botao-texto" type="button" id="botao-sair">Sair da conta</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tela exibida no lugar de uma aba quando o serviço dela está fora -->
+      <template id="modelo-degradado">
+        <div class="degradado">
+          <div class="degradado-selo"><span></span></div>
+          <p class="sobrelinha degradado-rotulo"></p>
+          <h3 class="degradado-titulo"></h3>
+          <p class="degradado-texto"></p>
+          <div class="degradado-acoes"></div>
+          <p class="degradado-rodape">Tentando reconectar automaticamente…</p>
+        </div>
+      </template>
+    </main>
+  </div>
+
+  <div class="avisos" id="avisos" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>

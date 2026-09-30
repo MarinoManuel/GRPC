@@ -1,0 +1,18 @@
+# Ambiente virtual: cada máquina cria o seu (python -m venv .venv)
+.venv/
+
+# Python
+__pycache__/
+
+# Bancos SQLite e dados de execução (criados na 1ª execução / pelos seeds)
+*.db
+*.db-wal
+*.db-shm
+fotos_usuarios/
+painel/logs/
+
+# Originais das fotos de seed: as versões usadas pelo Discovery estão em discovery/fotos/
+/fotos/
+
+# Arquivos temporários do Word (aparecem enquanto um .docx está aberto)
+~$*
